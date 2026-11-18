@@ -1,0 +1,7 @@
+start 2026-11-13T16:13:05Z endpoint=reranker-aws031-06b-int8 hammer=195a09c modes=quality meticulous
+quality start 2026-11-13T16:13:05Z
+quality exit 0 2026-11-13T16:29:14Z
+meticulous start 2026-11-13T16:29:14Z
+meticulous exit 0 2026-11-13T16:36:21Z
+done 2026-11-13T16:36:22Z
+endpoint-delete-requested 2026-11-13T16:36:23Z

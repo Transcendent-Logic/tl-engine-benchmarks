@@ -1,0 +1,1 @@
+[{"VariantName":"AllTraffic","ModelName":"reranker-mp-mainc-06b-3","InitialInstanceCount":1,"InstanceType":"ml.g6.xlarge","ContainerStartupHealthCheckTimeoutInSeconds":1800,"ModelDataDownloadTimeoutInSeconds":1800}]

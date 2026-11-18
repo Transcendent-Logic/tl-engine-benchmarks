@@ -1,0 +1,3 @@
+arn:aws:sagemaker:eu-west-3:<account-id>:model/reranker-aws031-8b
+arn:aws:sagemaker:eu-west-3:<account-id>:endpoint-config/reranker-aws031-8b
+arn:aws:sagemaker:eu-west-3:<account-id>:endpoint/reranker-aws031-8b

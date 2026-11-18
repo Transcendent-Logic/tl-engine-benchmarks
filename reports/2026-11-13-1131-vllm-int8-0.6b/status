@@ -1,0 +1,17 @@
+start 2026-11-13T11:31:51Z endpoint=reranker-aws031-06b-int8 hammer=195a09c modes=default
+smoke start 2026-11-13T11:31:51Z
+smoke exit 1 2026-11-13T11:31:59Z
+quality start 2026-11-13T11:32:00Z
+quality exit 0 2026-11-13T11:48:01Z
+normal start 2026-11-13T11:48:01Z
+normal exit 0 2026-11-13T11:53:03Z
+burst start 2026-11-13T11:53:04Z
+burst exit 1 2026-11-13T11:56:02Z
+speed start 2026-11-13T11:56:03Z
+speed exit 0 2026-11-13T12:03:42Z
+meticulous start 2026-11-13T12:03:42Z
+meticulous exit 0 2026-11-13T12:10:51Z
+hammer32k start 2026-11-13T12:10:51Z
+hammer32k exit 0 2026-11-13T12:55:55Z
+done 2026-11-13T12:55:55Z
+endpoint-delete-requested 2026-11-13T12:55:56Z

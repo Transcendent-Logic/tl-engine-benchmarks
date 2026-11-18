@@ -1,0 +1,92 @@
+{
+ "run": "2026-11-11-0010-vllm-bf16-4b",
+ "configuration": "vllm-bf16",
+ "label": "vLLM 16-bit",
+ "size": "4B",
+ "model": "Qwen/Qwen3-Reranker-4B",
+ "started_utc": "2026-11-11T00:10:29Z",
+ "finished_utc": "2026-11-11T03:18:49Z",
+ "image": "763104351884.dkr.ecr.eu-west-3.amazonaws.com/vllm:0.31.0-gpu-py312-cu130-ubuntu24.04-sagemaker",
+ "image_digest": "sha256:da4fd31c78d04b5ec659c7fed354dd33a28b83d88cf74a6a0539630a92a93690",
+ "environment": {
+  "SM_VLLM_MODEL": "/opt/ml/model",
+  "SM_VLLM_RUNNER": "pooling",
+  "SM_VLLM_DTYPE": "bfloat16",
+  "SM_VLLM_SERVED_MODEL_NAME": "qwen3-reranker-4b",
+  "SM_VLLM_CHAT_TEMPLATE": "/opt/ml/model/qwen3_reranker.jinja",
+  "SM_VLLM_HF_OVERRIDES": "{\"architectures\":[\"Qwen3ForSequenceClassification\"],\"classifier_from_token\":[\"no\",\"yes\"],\"is_original_qwen3_reranker\":true}",
+  "HF_HUB_OFFLINE": "1"
+ },
+ "weights": "s3://<our-bucket>/reranker-bench/models/qwen3-reranker-4b/",
+ "endpoint": {
+  "instance_type": "ml.g6.xlarge",
+  "instance_count": 1,
+  "region": "eu-west-3",
+  "network_isolation": true,
+  "host_image": "al2023-ami-sagemaker-inference-gpu-4-1",
+  "startup_health_check_timeout_s": 1800,
+  "model_download_timeout_s": 1800
+ },
+ "client": {
+  "instance_type": "c7i.xlarge",
+  "region": "eu-west-3",
+  "hammer_commit": "195a09c",
+  "machine": "first client (runs of 2026-11-10 to 16); its instance type is from our notes of 2026-11-06, not from the run's files"
+ },
+ "modes": [
+  {
+   "mode": "smoke",
+   "start": "2026-11-11T00:10:33Z",
+   "args": "--timeout 75",
+   "exit": 1,
+   "end": "2026-11-11T00:11:01Z"
+  },
+  {
+   "mode": "quality",
+   "start": "2026-11-11T00:11:03Z",
+   "args": "--timeout 75 --concurrency 2",
+   "exit": 0,
+   "end": "2026-11-11T01:29:09Z"
+  },
+  {
+   "mode": "normal",
+   "start": "2026-11-11T01:29:11Z",
+   "args": "--timeout 75 --rate 0.25 --duration 900",
+   "exit": 0,
+   "end": "2026-11-11T01:44:30Z"
+  },
+  {
+   "mode": "burst",
+   "start": "2026-11-11T01:44:32Z",
+   "args": "--timeout 75",
+   "exit": 1,
+   "end": "2026-11-11T01:51:51Z"
+  },
+  {
+   "mode": "speed",
+   "start": "2026-11-11T01:58:55Z",
+   "args": "--timeout 75",
+   "exit": 0,
+   "end": "2026-11-11T02:09:16Z"
+  },
+  {
+   "mode": "meticulous",
+   "start": "2026-11-11T02:12:19Z",
+   "args": "--timeout 75",
+   "exit": 0,
+   "end": "2026-11-11T02:33:38Z"
+  },
+  {
+   "mode": "hammer32k",
+   "start": "2026-11-11T02:33:40Z",
+   "args": "--timeout 75",
+   "exit": 0,
+   "end": "2026-11-11T03:18:47Z"
+  }
+ ],
+ "used_in": [
+  "throughput",
+  "single-request",
+  "quality"
+ ]
+}

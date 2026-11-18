@@ -1,0 +1,112 @@
+{
+  "beir-arguana": {
+    "requests": 300,
+    "ndcg@10": 0.5794002039923162,
+    "mrr": 0.43826863876863875
+  },
+  "beir-fiqa": {
+    "requests": 300,
+    "ndcg@10": 0.675461062295203,
+    "mrr": 0.717556723777312
+  },
+  "beir-scifact": {
+    "requests": 300,
+    "ndcg@10": 0.8203017381678853,
+    "mrr": 0.7833239644342586
+  },
+  "ladder-1024": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder-16384": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder-2048": {
+    "requests": 50,
+    "ndcg@10": 0.9926185950714291,
+    "mrr": 0.99
+  },
+  "ladder-256": {
+    "requests": 50,
+    "ndcg@10": 0.9852371901428583,
+    "mrr": 0.98
+  },
+  "ladder-32768": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder-4096": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder-512": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder-8192": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder1-1024": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder1-16384": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder1-2048": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder1-256": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder1-32768": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder1-4096": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder1-512": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "ladder1-8192": {
+    "requests": 50,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "natural-2wikimqa": {
+    "requests": 300,
+    "ndcg@10": 1.0,
+    "mrr": 1.0
+  },
+  "natural-qmsum": {
+    "requests": 300,
+    "ndcg@10": 0.9487090384735942,
+    "mrr": 0.9308333333333333
+  },
+  "natural-summ_screen_fd": {
+    "requests": 300,
+    "ndcg@10": 0.9987697658452382,
+    "mrr": 0.9983333333333333
+  }
+}

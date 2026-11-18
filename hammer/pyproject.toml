@@ -1,0 +1,20 @@
+[project]
+name = "tl-engine-benchmarks-hammer"
+version = "0.1.0"
+description = "Load, latency and ranking-quality tests for reranking endpoints (Amazon SageMaker, or any server that takes the same request)"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.27",
+    "matplotlib>=3.9",
+    "pyarrow>=17",
+    "tokenizers>=0.20",
+]
+
+[project.optional-dependencies]
+# Local vanilla Qwen3-Reranker scoring (scripts/reference.py); needs an NVIDIA GPU.
+reference = [
+    "torch>=2.6",
+    "transformers>=4.51",
+    "accelerate>=1.0",
+    "kernels>=0.17,<0.18",
+]

@@ -1,0 +1,12 @@
+start 2026-11-15T14:16:47Z endpoint=reranker-aws031-8b-bf16-2 hammer=195a09c modes=quality meticulous model=qwen3-reranker-8b
+probe idle 1: 2.05 s ok tokens=6670 top_index=0 top_score=0.6994 2026-11-15T14:16:49Z
+probe idle 2: 2.05 s ok tokens=6670 top_index=0 top_score=0.7066 2026-11-15T14:16:51Z
+probe idle 3: 2.05 s ok tokens=6669 top_index=0 top_score=0.7052 2026-11-15T14:16:53Z
+quality start 2026-11-15T14:16:53Z args: --timeout 75 --concurrency 2
+quality exit 0 2026-11-15T16:23:57Z
+probe right after quality: 2.18 s ok tokens=6670 top_index=0 top_score=0.7044 2026-11-15T16:23:59Z
+meticulous start 2026-11-15T16:24:00Z args: --timeout 75 
+meticulous exit 0 2026-11-15T16:55:51Z
+probe right after meticulous: 2.15 s ok tokens=6670 top_index=0 top_score=0.6994 2026-11-15T16:55:54Z
+done 2026-11-15T16:55:54Z
+endpoint-delete-requested 2026-11-15T16:55:55Z

@@ -1,0 +1,9 @@
+== create reranker-aws031-4b-int8-1 at 16:37:38Z
+{"Image": "763104351884.dkr.ecr.eu-west-3.amazonaws.com/vllm:0.31.0-gpu-py312-cu130-ubuntu24.04-sagemaker", "Environment": {"SM_VLLM_MODEL": "/opt/ml/model", "SM_VLLM_RUNNER": "pooling", "SM_VLLM_DTYPE": "bfloat16", "SM_VLLM_SERVED_MODEL_NAME": "qwen3-reranker-4b", "SM_VLLM_CHAT_TEMPLATE": "/opt/ml/model/qwen3_reranker.jinja", "SM_VLLM_HF_OVERRIDES": "{\"architectures\":[\"Qwen3ForSequenceClassification\"],\"classifier_from_token\":[\"no\",\"yes\"],\"is_original_qwen3_reranker\":true}", "HF_HUB_OFFLINE": "1"}, "ModelDataSource": {"S3DataSource": {"S3Uri": "s3://<our-bucket>/reranker-bench/w8a8-msmarco-4b/checkpoints/w8a8-4b-msmarco-20261113-1502/Qwen3-Reranker-4B-W8A8-SQ-msmarco/", "S3DataType": "S3Prefix", "CompressionType": "None"}}}
+
+arn:aws:sagemaker:eu-west-3:<account-id>:model/reranker-aws031-4b-int8-1
+arn:aws:sagemaker:eu-west-3:<account-id>:endpoint-config/reranker-aws031-4b-int8-1
+arn:aws:sagemaker:eu-west-3:<account-id>:endpoint/reranker-aws031-4b-int8-1
+== reranker-aws031-4b-int8-1: InService after 9 min 48 s
+req_short 255 [(1, 0.948403), (2, 0.005287), (0, 5.9e-05)]
+req_long 24255 [(1, 0.899055), (0, 0.01719), (2, 5.9e-05)]

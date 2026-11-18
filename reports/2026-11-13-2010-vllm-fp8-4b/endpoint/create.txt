@@ -1,0 +1,9 @@
+== create reranker-aws031-4b-fp8-2 at 19:58:26Z
+{"Image": "763104351884.dkr.ecr.eu-west-3.amazonaws.com/vllm:0.31.0-gpu-py312-cu130-ubuntu24.04-sagemaker", "Environment": {"SM_VLLM_MODEL": "/opt/ml/model", "SM_VLLM_RUNNER": "pooling", "SM_VLLM_DTYPE": "bfloat16", "SM_VLLM_SERVED_MODEL_NAME": "qwen3-reranker-4b", "SM_VLLM_CHAT_TEMPLATE": "/opt/ml/model/qwen3_reranker.jinja", "SM_VLLM_HF_OVERRIDES": "{\"architectures\":[\"Qwen3ForSequenceClassification\"],\"classifier_from_token\":[\"no\",\"yes\"],\"is_original_qwen3_reranker\":true}", "HF_HUB_OFFLINE": "1", "SM_VLLM_QUANTIZATION": "fp8"}, "ModelDataSource": {"S3DataSource": {"S3Uri": "s3://<our-bucket>/reranker-bench/models/qwen3-reranker-4b/", "S3DataType": "S3Prefix", "CompressionType": "None"}}}
+
+arn:aws:sagemaker:eu-west-3:<account-id>:model/reranker-aws031-4b-fp8-2
+arn:aws:sagemaker:eu-west-3:<account-id>:endpoint-config/reranker-aws031-4b-fp8-2
+arn:aws:sagemaker:eu-west-3:<account-id>:endpoint/reranker-aws031-4b-fp8-2
+== reranker-aws031-4b-fp8-2: InService after 11 min 30 s
+req_short 255 [(1, 0.958457), (2, 0.004921), (0, 7.9e-05)]
+req_long 24255 [(1, 0.892192), (0, 0.116656), (2, 7.3e-05)]

@@ -1,0 +1,29 @@
+start 2026-11-11T00:10:29Z endpoint=reranker-aws031-4b hammer=195a09c modes=default model=qwen3-reranker-4b
+probe idle 1: 1.27 s ok tokens=6671 top_index=0 top_score=0.7920 2026-11-11T00:10:30Z
+probe idle 2: 1.25 s ok tokens=6670 top_index=0 top_score=0.8041 2026-11-11T00:10:32Z
+probe idle 3: 1.25 s ok tokens=6671 top_index=0 top_score=0.7958 2026-11-11T00:10:33Z
+smoke start 2026-11-11T00:10:33Z args: --timeout 75 
+smoke exit 1 2026-11-11T00:11:01Z
+probe right after smoke: 1.24 s ok tokens=6670 top_index=0 top_score=0.7877 2026-11-11T00:11:03Z
+quality start 2026-11-11T00:11:03Z args: --timeout 75 --concurrency 2
+quality exit 0 2026-11-11T01:29:09Z
+probe right after quality: 1.31 s ok tokens=6670 top_index=0 top_score=0.7959 2026-11-11T01:29:11Z
+normal start 2026-11-11T01:29:11Z args: --timeout 75 --rate 0.25 --duration 900
+normal exit 0 2026-11-11T01:44:30Z
+probe right after normal: 1.26 s ok tokens=6671 top_index=0 top_score=0.8043 2026-11-11T01:44:31Z
+burst start 2026-11-11T01:44:32Z args: --timeout 75 
+burst exit 1 2026-11-11T01:51:51Z
+probe right after burst: 1.31 s ok tokens=6670 top_index=0 top_score=0.8125 2026-11-11T01:51:53Z
+probe 7 min after burst: 1.24 s ok tokens=6670 top_index=0 top_score=0.7882 2026-11-11T01:58:54Z
+speed start 2026-11-11T01:58:55Z args: --timeout 75 
+speed exit 0 2026-11-11T02:09:16Z
+probe right after speed: 1.31 s ok tokens=6670 top_index=0 top_score=0.7844 2026-11-11T02:09:17Z
+probe 3 min after speed: 1.27 s ok tokens=6671 top_index=0 top_score=0.8137 2026-11-11T02:12:19Z
+meticulous start 2026-11-11T02:12:19Z args: --timeout 75 
+meticulous exit 0 2026-11-11T02:33:38Z
+probe right after meticulous: 1.31 s ok tokens=6671 top_index=0 top_score=0.8142 2026-11-11T02:33:39Z
+hammer32k start 2026-11-11T02:33:40Z args: --timeout 75 
+hammer32k exit 0 2026-11-11T03:18:47Z
+probe right after hammer32k: 1.31 s ok tokens=6670 top_index=0 top_score=0.7969 2026-11-11T03:18:49Z
+done 2026-11-11T03:18:49Z
+endpoint-delete-requested 2026-11-11T03:18:50Z

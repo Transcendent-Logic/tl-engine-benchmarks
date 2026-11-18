@@ -1,0 +1,16 @@
+start 2026-11-17T14:13:56Z endpoint=reranker-aws031-8b-bf16-L2 hammer=195a09c modes=normal speed hammer32k model=qwen3-reranker-8b size=8b
+probe idle 1: 2.08 s ok tokens=6669 top_index=0 top_score=0.6960 2026-11-17T14:13:59Z
+probe idle 2: 2.05 s ok tokens=6670 top_index=0 top_score=0.7007 2026-11-17T14:14:01Z
+probe idle 3: 2.07 s ok tokens=6672 top_index=0 top_score=0.6783 2026-11-17T14:14:03Z
+normal start 2026-11-17T14:14:03Z args: --timeout 75 --rate 0.25 --duration 900
+normal exit 0 2026-11-17T14:29:23Z
+probe right after normal: 2.21 s ok tokens=6671 top_index=0 top_score=0.6938 2026-11-17T14:29:25Z
+speed start 2026-11-17T14:29:26Z args: --timeout 75 
+speed exit 1 2026-11-17T14:41:51Z
+probe right after speed: 2.30 s ok tokens=6671 top_index=0 top_score=0.6924 2026-11-17T14:41:54Z
+probe 3 min after speed: 2.09 s ok tokens=6670 top_index=0 top_score=0.7000 2026-11-17T14:44:56Z
+hammer32k start 2026-11-17T14:44:57Z args: --timeout 75 
+hammer32k exit 0 2026-11-17T15:30:12Z
+probe right after hammer32k: 2.32 s ok tokens=6670 top_index=0 top_score=0.7040 2026-11-17T15:30:15Z
+done 2026-11-17T15:30:15Z
+endpoint-delete-requested 2026-11-17T15:30:16Z

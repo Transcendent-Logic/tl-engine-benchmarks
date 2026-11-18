@@ -1,0 +1,17 @@
+TL Engine benchmarks
+Copyright 2026 Transcendent Logic
+
+This repository is licensed under the Apache License, Version 2.0 (LICENSE).
+
+The hammer (hammer/) was written by Renaldas Zioma and is published here under the same licence with the
+author's agreement.
+
+The benchmark serves Qwen3-Reranker models (Qwen3-Reranker-0.6B, -4B and -8B) by Alibaba Cloud's Qwen team,
+published at https://huggingface.co/Qwen under the Apache License, Version 2.0. No model files are in this
+repository. scripts/qwen3_reranker.jinja is the models' prompt format, as given on their model cards.
+
+The request sets are built at run time from datasets downloaded from Hugging Face (BEIR's SciFact, FiQA and
+ArguAna; LongEmbed; MS MARCO for the int8 calibration). None of their text is in this repository; each dataset
+has its own terms.
+
+TL Engine, the inference engine measured here, is not part of this repository.

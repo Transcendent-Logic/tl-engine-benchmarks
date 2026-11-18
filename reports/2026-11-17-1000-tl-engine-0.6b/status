@@ -1,0 +1,16 @@
+start 2026-11-17T10:00:21Z endpoint=reranker-mp-mainc-06b-3 hammer=195a09c modes=quality meticulous speed model=default size=06b
+probe idle 1: 0.21 s ok tokens=6670 top_index=0 top_score=0.9777 2026-11-17T10:00:21Z
+probe idle 2: 0.19 s ok tokens=6670 top_index=0 top_score=0.9809 2026-11-17T10:00:21Z
+probe idle 3: 0.20 s ok tokens=6671 top_index=0 top_score=0.9786 2026-11-17T10:00:22Z
+quality start 2026-11-17T10:00:22Z args: --timeout 75 
+quality exit 0 2026-11-17T10:10:58Z
+probe right after quality: 0.20 s ok tokens=6670 top_index=0 top_score=0.9791 2026-11-17T10:10:59Z
+meticulous start 2026-11-17T10:10:59Z args: --timeout 75 
+meticulous exit 0 2026-11-17T10:16:45Z
+probe right after meticulous: 0.21 s ok tokens=6670 top_index=0 top_score=0.9814 2026-11-17T10:16:45Z
+speed start 2026-11-17T10:16:46Z args: --timeout 75 
+speed exit 0 2026-11-17T10:24:09Z
+probe right after speed: 0.20 s ok tokens=6670 top_index=0 top_score=0.9816 2026-11-17T10:24:09Z
+probe 3 min after speed: 0.19 s ok tokens=6670 top_index=0 top_score=0.9761 2026-11-17T10:27:10Z
+done 2026-11-17T10:27:10Z
+endpoint-delete-requested 2026-11-17T10:27:11Z

@@ -1,0 +1,57 @@
+{
+ "run": "2026-11-15-1708-vllm-fp8-8b",
+ "configuration": "vllm-fp8",
+ "label": "vLLM fp8",
+ "size": "8B",
+ "model": "Qwen/Qwen3-Reranker-8B",
+ "started_utc": "2026-11-15T17:08:00Z",
+ "finished_utc": "2026-11-15T19:08:10Z",
+ "image": "763104351884.dkr.ecr.eu-west-3.amazonaws.com/vllm:0.31.0-gpu-py312-cu130-ubuntu24.04-sagemaker",
+ "image_digest": "sha256:da4fd31c78d04b5ec659c7fed354dd33a28b83d88cf74a6a0539630a92a93690",
+ "environment": {
+  "SM_VLLM_MODEL": "/opt/ml/model",
+  "SM_VLLM_RUNNER": "pooling",
+  "SM_VLLM_DTYPE": "bfloat16",
+  "SM_VLLM_SERVED_MODEL_NAME": "qwen3-reranker-8b",
+  "SM_VLLM_CHAT_TEMPLATE": "/opt/ml/model/qwen3_reranker.jinja",
+  "SM_VLLM_HF_OVERRIDES": "{\"architectures\":[\"Qwen3ForSequenceClassification\"],\"classifier_from_token\":[\"no\",\"yes\"],\"is_original_qwen3_reranker\":true}",
+  "HF_HUB_OFFLINE": "1",
+  "SM_VLLM_MAX_MODEL_LEN": "40000",
+  "SM_VLLM_QUANTIZATION": "fp8"
+ },
+ "weights": "s3://<our-bucket>/reranker-bench/models/qwen3-reranker-8b/",
+ "endpoint": {
+  "instance_type": "ml.g6.xlarge",
+  "instance_count": 1,
+  "region": "eu-west-3",
+  "network_isolation": true,
+  "host_image": "al2023-ami-sagemaker-inference-gpu-4-1",
+  "startup_health_check_timeout_s": 1800,
+  "model_download_timeout_s": 1800
+ },
+ "client": {
+  "instance_type": "c7i.xlarge",
+  "region": "eu-west-3",
+  "hammer_commit": "195a09c",
+  "machine": "first client (runs of 2026-11-10 to 16); its instance type is from our notes of 2026-11-06, not from the run's files"
+ },
+ "modes": [
+  {
+   "mode": "quality",
+   "start": "2026-11-15T17:08:05Z",
+   "args": "--timeout 75 --concurrency 2",
+   "exit": 0,
+   "end": "2026-11-15T18:43:24Z"
+  },
+  {
+   "mode": "meticulous",
+   "start": "2026-11-15T18:43:27Z",
+   "args": "--timeout 75",
+   "exit": 0,
+   "end": "2026-11-15T19:08:08Z"
+  }
+ ],
+ "used_in": [
+  "quality"
+ ]
+}
