@@ -15,7 +15,7 @@ This repository holds everything needed to see and repeat it: the load client, e
 | **vLLM 16-bit** | AWS's SageMaker vLLM 0.31.0 container | Qwen's, unmodified | BF16 |
 | **vLLM fp8** | The same container with `SM_VLLM_QUANTIZATION=fp8` | Qwen's, quantized by vLLM when it loads them | fp8 weights and activations (per tensor) |
 | **vLLM int8** | The same container | An int8 W8A8 SmoothQuant checkpoint made with llm-compressor ([`scripts/w8a8_sq_msmarco.py`](scripts/w8a8_sq_msmarco.py)) | int8 weights and activations |
-| **TL Engine** | Our engine, in the image of our AWS Marketplace listing | Qwen's, unmodified | Computes in 8-bit integers on its own L4 kernels |
+| **TL Engine** | Our engine, in the image of our AWS Marketplace listing | Qwen's, unmodified | Mixed precision, on its own kernels for the L4 |
 
 The engine itself is proprietary and is not in this repository; you can run it through the AWS Marketplace listing (see [Repeat it](#repeat-it)).
 
