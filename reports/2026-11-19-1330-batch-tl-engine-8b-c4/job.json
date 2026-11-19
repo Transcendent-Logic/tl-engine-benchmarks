@@ -1,0 +1,38 @@
+{
+    "TransformJobName": "tlb-tl-8b-c4-1119-133039",
+    "TransformJobArn": "arn:aws:sagemaker:eu-west-3:<account-id>:transform-job/tlb-tl-8b-c4-1119-133039",
+    "TransformJobStatus": "Completed",
+    "ModelName": "tlb-tl-8b-c4-1119-133039",
+    "MaxConcurrentTransforms": 4,
+    "BatchStrategy": "SingleRecord",
+    "TransformInput": {
+        "DataSource": {
+            "S3DataSource": {
+                "S3DataType": "S3Prefix",
+                "S3Uri": "s3://<our-bucket>/batch-bench/inputs/short20-8b-900/"
+            }
+        },
+        "ContentType": "application/json",
+        "CompressionType": "None",
+        "SplitType": "Line"
+    },
+    "TransformOutput": {
+        "S3OutputPath": "s3://<our-bucket>/batch-bench/tlb-tl-8b-c4-1119-133039/output/",
+        "Accept": "application/json",
+        "AssembleWith": "Line",
+        "KmsKeyId": ""
+    },
+    "TransformResources": {
+        "InstanceType": "ml.g6.xlarge",
+        "InstanceCount": 1,
+        "TransformAmiVersion": "al2-ami-sagemaker-batch-gpu-535"
+    },
+    "CreationTime": "2026-11-19T15:30:48.560000+02:00",
+    "TransformStartTime": "2026-11-19T15:37:34.569000+02:00",
+    "TransformEndTime": "2026-11-19T15:59:17.325000+02:00",
+    "DataProcessing": {
+        "InputFilter": "$",
+        "OutputFilter": "$",
+        "JoinSource": "None"
+    }
+}

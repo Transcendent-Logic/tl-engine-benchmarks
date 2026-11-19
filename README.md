@@ -6,6 +6,7 @@ This repository holds everything needed to see and repeat it: the load client, e
 
 - **Same model, same hardware.** Each configuration ran on its own Amazon SageMaker real-time endpoint: one ml.g6.xlarge (one NVIDIA L4, 24 GB) in eu-west-3 (Paris), network isolation on.
 - **The baseline is vLLM as AWS ships it.** AWS's SageMaker vLLM 0.31.0 container, unmodified, with vLLM's defaults and only the settings a reranker needs.
+- **Batch transform jobs too.** The same models as SageMaker batch transform jobs, TL Engine against vLLM 16-bit, three jobs per configuration (2026-11-19): [Batch transform jobs](#batch-transform-jobs).
 - **Three runs of each configuration.** Every number below is the mean of three runs on three separate endpoints, run between 2026-11-10 and 2026-11-18. We publish only these means; each run's own values are in its folder under [`reports/`](reports/), and `python3 scripts/tables.py --runs` prints them next to the means.
 
 ## What was compared
@@ -144,6 +145,46 @@ Ranking quality on three BEIR sets (300 queries each, 20 candidate documents per
 | TL Engine | 0.782 | 0.847 | 0.692 | 98.7% | 6.731 | 1.65× |
 <!-- end -->
 
+### Batch transform jobs
+
+The same comparison as SageMaker batch transform jobs (2026-11-19): each job on one ml.g6.xlarge in eu-west-3, network isolation on, and the same input file for both engines per size. The input is the `short20` requests (20 documents per request, the three BEIR sets), one per line, each query with a nonce: 7,200 requests for the 0.6B (61.7 million tokens), 1,800 for the 4B (15.4 million), 900 for the 8B (7.7 million). `MaxConcurrentTransforms` was left unset, SageMaker's default (it asks the container's `/execution-parameters`, which neither container has, and then sends one request at a time), or set to 4. Three jobs per configuration.
+
+- **Tokens a second:** the tokens of all responses (`usage.total_tokens`) over the time from the first to the last request in the container log.
+- **Billed job:** `TransformStartTime` to `TransformEndTime`, container start-up and processing. Not counted: the few minutes before, while AWS finds the instance, the same for both engines. "Finishes sooner by" is vLLM's billed job time divided by TL Engine's.
+- **$ per million tokens:** ml.g6.xlarge batch transform in Paris at $1.43024 an hour (AWS Price List API, read 2026-11-19), over the billed job. TL Engine's row adds its $0.30 an hour software fee.
+
+**0.6B**
+
+<!-- table:batch-0.6B -->
+| MaxConcurrentTransforms | vLLM 16-bit (tok/s) | TL Engine (tok/s) | TL Engine ÷ vLLM | Billed job, vLLM 16-bit (s) | Billed job, TL Engine (s) | Finishes sooner by | $ per million tokens, vLLM 16-bit | $ per million tokens, TL Engine with its fee | TL Engine costs less by |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 (SageMaker's default) | 51,329 | 77,145 | 1.50× | 1,527 | 963 | 1.59× | $0.0098 | $0.0075 | 23.7% |
+| 4 | 57,203 | 107,805 | 1.88× | 1,405 | 738 | 1.91× | $0.0090 | $0.0057 | 36.5% |
+<!-- end -->
+
+**4B**
+
+<!-- table:batch-4B -->
+| MaxConcurrentTransforms | vLLM 16-bit (tok/s) | TL Engine (tok/s) | TL Engine ÷ vLLM | Billed job, vLLM 16-bit (s) | Billed job, TL Engine (s) | Finishes sooner by | $ per million tokens, vLLM 16-bit | $ per million tokens, TL Engine with its fee | TL Engine costs less by |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 (SageMaker's default) | 9,426 | 14,756 | 1.57× | 2,050 | 1,283 | 1.60× | $0.0528 | $0.0400 | 24.3% |
+| 4 | 10,047 | 15,590 | 1.55× | 1,954 | 1,228 | 1.59× | $0.0503 | $0.0383 | 24.0% |
+<!-- end -->
+
+**8B**
+
+<!-- table:batch-8B -->
+| MaxConcurrentTransforms | vLLM 16-bit (tok/s) | TL Engine (tok/s) | TL Engine ÷ vLLM | Billed job, vLLM 16-bit (s) | Billed job, TL Engine (s) | Finishes sooner by | $ per million tokens, vLLM 16-bit | $ per million tokens, TL Engine with its fee | TL Engine costs less by |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 (SageMaker's default) | 5,129 | 8,309 | 1.62× | 2,141 | 1,311 | 1.63× | $0.1103 | $0.0817 | 25.9% |
+| 4 | 5,376 | 8,409 | 1.56× | 2,071 | 1,297 | 1.60× | $0.1067 | $0.0808 | 24.2% |
+<!-- end -->
+
+- **Batch matches the endpoint benchmark.** At `MaxConcurrentTransforms` 4, vLLM 16-bit reaches 100% (0.6B), 94% (4B) and 100% (8B) of its peak on the endpoints (`short20`, 4 in flight, above), TL Engine 102%, 102% and 97%.
+- **SageMaker's default costs the most on the 0.6B.** Left at 1, TL Engine 0.6B runs at 72% of its speed at 4 (vLLM 16-bit at 90%), because each request takes so little GPU time that the gaps between requests show. On the 4B and 8B one 20-document request already fills the L4: both engines keep 94 to 99% of their speed. Set `MaxConcurrentTransforms` to 4 for batch jobs.
+- **Same rankings.** On the same input, TL Engine's top document is vLLM 16-bit's in 96.3% (0.6B), 98.0% (4B) and 97.9% (8B) of requests, and in 99.6 to 99.9% counting a different top document whose vLLM score is within 0.01 of the best; vLLM 16-bit's own jobs agree with each other in 99.0 to 99.6%.
+- **Start-up** (job start to first request) is 160 to 380 seconds for TL Engine and 320 to 640 seconds for vLLM 16-bit; it is inside the billed job. Before it, AWS takes a few minutes to provide the instance, the same for both, so on these job sizes the whole wait from the create call to the finished job is shorter by less than the billed job.
+
 `python3 scripts/tables.py` prints these tables from the run folders, plus `normal` (mixed traffic at a steady rate) and `hammer32k` latency percentiles; `--check` confirms the tables above match the data.
 
 ## Repeat it
@@ -183,20 +224,38 @@ One exception: vLLM's 4B runs of 2026-11-11 to 15 (16-bit, fp8, and the base of 
 - The modes and their arguments, per run: [`scripts/run_modes.sh`](scripts/run_modes.sh) runs them as the runs did. The 4B and 8B ran `quality` at 2 in flight and `normal` at 0.25 requests a second for 15 minutes; the 0.6B ran the hammer's defaults (`quality` at 4 in flight, `normal` at 1.5 a second for 5 minutes). Every `speed` and `meticulous` query carries a random nonce, so no answer comes from a prefix cache.
 - The runs behind the quality table ran `quality` and `meticulous` (TL Engine also `speed`); the load runs ran `normal`, `speed` and `hammer32k` (vLLM 16-bit) or `normal` and `hammer32k` (TL Engine, whose `speed` comes from its quality runs). The first 16-bit run of each size was a full run of every mode.
 
+### Batch transform jobs
+
+Each run folder named `<date>-<time>-batch-<configuration>-<size>-c<1|4>` under [`reports/`](reports/) holds what its job was created with (`transform-input.json`, `model-container.json`), how it ended (`job.json`), SageMaker's data log, the measures (`batch.json`) and per request the scores and tokens (`per-request.jsonl`). The scripts are in [`scripts/batch/`](scripts/batch/):
+
+1. **Input:** `python3 scripts/batch/build_input.py --prepared hammer/data/prepared --size 4b --count 1800 --out in-4b` (after the hammer's `prepare.py`; 7,200 requests for the 0.6B, 900 for the 8B). It writes `in-4b/input/requests.jsonl`, byte for byte the runs' input: its SHA-256 is in each run's `run.json`. Copy it to S3.
+2. **vLLM 16-bit weights:** `scripts/batch/pack_vllm_weights.sh 4b s3://<your bucket>/models/qwen3-reranker-4b/model.tar.gz`: the Hugging Face revision of the endpoint runs plus [`scripts/qwen3_reranker.jinja`](scripts/qwen3_reranker.jinja), packed as one `model.tar.gz`.
+3. **A job:** `ROLE_ARN=… OUTPUT_S3=s3://<your bucket>/batch/ VLLM_WEIGHTS=s3://…/model.tar.gz scripts/batch/run_job.sh vllm-bf16 4b 4 <job name> s3://<your bucket>/in-4b/ out/<job name>`; for TL Engine, `MODEL_PACKAGE_ARN=<the ARN your subscription gives you> … run_job.sh tl-engine 4b 4 …`. `default` instead of `4` leaves `MaxConcurrentTransforms` unset.
+4. **The measures:** `python3 scripts/batch/analyze.py out/<job name> in-4b/index.jsonl` writes `batch.json` and `per-request.jsonl`.
+
+How the batch jobs differ from the endpoint runs:
+
+- **vLLM's weights are a `model.tar.gz`** of the same files as the endpoints' uncompressed folder: a batch job refuses a model whose container uses `ModelDataSource`.
+- **The host.** Both engines ran on SageMaker's default batch host, with NVIDIA driver 535. The vLLM endpoints ran on `al2023-ami-sagemaker-inference-gpu-4-1` (driver 580), which batch transform does not offer: `TransformAmiVersion` has only `al2-ami-sagemaker-batch-gpu-470` and `-535`. AWS's CUDA 13 vLLM container starts and runs there.
+- **vLLM 8B adds `SM_VLLM_GPU_MEMORY_UTILIZATION=0.925`** (vLLM's default is 0.92). With driver 535 the L4 reports 21.96 GiB instead of 22.03 GiB, and at 0.92 every start of vLLM 8B found 5.45 GiB of KV cache against the 5.49 GiB that 40,000 tokens need (`ValueError: To serve at least one request with the model's max seq len (40000), (5.49 GiB KV cache is needed, which is larger than the available KV cache memory (5.45 GiB)`), so the job failed its health check. On the endpoints the same check passed with 5.52 GiB. 0.925 gives about 5.57 GiB: more memory for vLLM, not less. The 0.6B and 4B run with the endpoints' settings unchanged.
+- **TL Engine runs from the listing's model package** with no environment, as a buyer creates it: the listing's image (see [TL Engine](#tl-engine)), whose engine files are those of the benchmarked image.
+
 ### What is not here
 
 - The engine, and our engine's container logs, which describe its internals. vLLM's container logs are in each vLLM run's folder.
 - The client wrapper scripts of 2026-11-10 to 15 were not kept. What they ran is in each run's `status` file: modes, arguments, order and times. `scripts/run_modes.sh`, made from the wrappers of 2026-11-16/17, reproduces those arguments; the only difference is noted in it (the 0.6B runs of 2026-11-10 to 13 used the hammer's default 60-second request timeout instead of 75 seconds, with no request slower than 25 seconds).
 - The small probe requests the wrappers sent between modes (their results are the `probe` lines in `status`; no table uses them).
 - The datasets' text. `hammer/scripts/prepare.py` downloads it; the run records hold only request ids, scores, latencies and errors.
+- Batch jobs: their raw output, which echoes every document's text (`per-request.jsonl` keeps every score and token count), and TL Engine's container log apart from its access lines (`POST /invocations`), which give the processing window.
 
 ## Layout
 
 | Folder | What it holds |
 |---|---|
 | [`hammer/`](hammer/) | The load and quality client, with its request-set builder and checksums |
-| [`reports/`](reports/) | One folder per run, named `<date>-<time UTC>-<configuration>-<size>`: the hammer's reports and per-request records, the client's status file, the endpoint's definition, vLLM's container log, and a README |
+| [`reports/`](reports/) | One folder per run, named `<date>-<time UTC>-<configuration>-<size>`: the hammer's reports and per-request records, the client's status file, the endpoint's definition, vLLM's container log, and a README; batch jobs as `<date>-<time UTC>-batch-<configuration>-<size>-c<1|4>` |
 | [`scripts/`](scripts/) | Creating endpoints, preparing weights, the int8 checkpoint, running the modes, and `tables.py`, which computes the tables above |
+| [`scripts/batch/`](scripts/batch/) | The batch transform jobs: building the input, packing vLLM's weights, running a job, measuring it |
 
 In the run folders our AWS account IDs, S3 bucket names and private registry are replaced by placeholders; nothing else was changed. Each run folder keeps only the modes this benchmark uses.
 

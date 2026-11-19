@@ -1,0 +1,33 @@
+{
+ "job": "tlb-tl-8b-cdefault-1119-132017",
+ "status": "Completed",
+ "max_concurrent": null,
+ "settings_line": "MaxConcurrentTransforms=1, MaxPayloadInMB=6, BatchStrategy=SINGLE_RECORD",
+ "created": "2026-11-19T15:20:19.691000+02:00",
+ "start": "2026-11-19T15:25:47.254000+02:00",
+ "end": "2026-11-19T15:47:30.319000+02:00",
+ "create_to_end_s": 1630.6,
+ "job_s": 1303.1,
+ "first_invocation": "2026-11-19T13:32:07.246000Z",
+ "last_invocation": "2026-11-19T13:47:28.583000Z",
+ "processing_s": 921.3,
+ "startup_s": 380.0,
+ "invocations": 900,
+ "invocation_status": {
+  "200": 900
+ },
+ "input_lines": 900,
+ "responses": 900,
+ "bad_responses": 0,
+ "data_log_errors": [],
+ "tokens": 7713006,
+ "tok_s_processing": 8371.5,
+ "tok_s_job": 5919.1,
+ "usd_per_m_tokens_job": 0.06712,
+ "usd_per_m_tokens_job_with_fee": 0.0812,
+ "ndcg10": {
+  "beir-arguana": 0.6901,
+  "beir-fiqa": 0.7832,
+  "beir-scifact": 0.8469
+ }
+}

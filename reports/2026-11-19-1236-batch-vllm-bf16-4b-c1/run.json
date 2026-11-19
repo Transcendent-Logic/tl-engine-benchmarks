@@ -1,0 +1,30 @@
+{
+ "run": "2026-11-19-1236-batch-vllm-bf16-4b-c1",
+ "kind": "batch",
+ "configuration": "vllm-bf16",
+ "label": "vLLM 16-bit",
+ "size": "4B",
+ "model": "Qwen/Qwen3-Reranker-4B",
+ "revision": "22e683669bc0f0bd69640a1354a6d0aebcfeede5",
+ "max_concurrent_transforms": 1,
+ "max_concurrent_transforms_set": false,
+ "input": {
+  "name": "short20-4b-1800",
+  "requests": 1800,
+  "seed": 20261119,
+  "sha256": "745a5252e388101c6ba1ad5e1c7fd9ba240c0282641c9dff29047f32e66f2065"
+ },
+ "created_utc": "2026-11-19T12:36:32Z",
+ "started_utc": "2026-11-19T12:41:25Z",
+ "ended_utc": "2026-11-19T13:15:46Z",
+ "status": "Completed",
+ "instance_type": "ml.g6.xlarge",
+ "instance_count": 1,
+ "region": "eu-west-3",
+ "network_isolation": true,
+ "host_image": "SageMaker's default for batch (TransformAmiVersion not set)",
+ "notes": [],
+ "used_in": [
+  "batch"
+ ]
+}

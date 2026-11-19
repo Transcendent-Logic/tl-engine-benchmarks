@@ -104,12 +104,12 @@ def mean_time(run, mode, cls):
 
 
 def pick(runs, size, config, use, mode):
-    return [r for r in runs if r["size"] == size and r["configuration"] == config and use in r["used_in"]
+    return [r for r in runs if r["size"] == size and r["configuration"] == config and use in r.get("used_in", [])
             and os.path.exists(os.path.join(ROOT, r["run"], f"{mode}.md"))]
 
 
 def fmt(v, kind):
-    return "–" if v is None else f"{v:,.0f}" if kind == "t" else f"{v:.3f}" if kind == "s" else f"{v:.1f}%" if kind == "%" else f"{v:.3f}"
+    return "–" if v is None else f"${v:.4f}" if kind == "$" else f"{v:,.0f}" if kind == "t" else f"{v:.3f}" if kind == "s" else f"{v:.1f}%" if kind == "%" else f"{v:.3f}"
 
 
 def values(rs, f, kind):
@@ -187,8 +187,41 @@ def extra(runs, size):
     return out
 
 
+# Batch transform jobs (run.json "kind": "batch", measures in batch.json from scripts/batch/analyze.py). Prices: ml.g6.xlarge
+# batch transform in eu-west-3 (Paris), $1.43024 an hour (AWS Price List API, read 2026-11-19); TL Engine's software fee on its
+# AWS Marketplace listings, $0.30 an hour. Cost per million tokens is over the billed job (TransformStartTime to TransformEndTime).
+BATCH_PRICE, BATCH_FEE = 1.43024, 0.30
+
+
+def batch_runs(runs, size, config, conc):
+    out = [r for r in runs if r.get("kind") == "batch" and r["size"] == size and r["configuration"] == config
+           and r["max_concurrent_transforms"] == conc]
+    for r in out:
+        r.setdefault("_b", json.load(open(os.path.join(ROOT, r["run"], "batch.json"))))
+    return out
+
+
+def batch(runs, size):
+    usd = lambda fee: (lambda r: (BATCH_PRICE + fee) * r["_b"]["job_s"] / 3600 / r["_b"]["tokens"] * 1e6)
+    out = ["| MaxConcurrentTransforms | vLLM 16-bit (tok/s) | TL Engine (tok/s) | TL Engine ÷ vLLM | Billed job, vLLM 16-bit (s) "
+           "| Billed job, TL Engine (s) | Finishes sooner by | $ per million tokens, vLLM 16-bit | $ per million tokens, TL Engine with its fee "
+           "| TL Engine costs less by |", "|---|---|---|---|---|---|---|---|---|---|"]
+    for conc, label in ((1, "1 (SageMaker's default)"), (4, "4")):
+        va, vb = batch_runs(runs, size, "vllm-bf16", conc), batch_runs(runs, size, "tl-engine", conc)
+        if not va or not vb:
+            continue
+        a, at = values(va, lambda r: r["_b"]["tok_s_processing"], "t")
+        b, bt = values(vb, lambda r: r["_b"]["tok_s_processing"], "t")
+        ja, jat = values(va, lambda r: r["_b"]["job_s"], "t")
+        jb, jbt = values(vb, lambda r: r["_b"]["job_s"], "t")
+        ca, cat = values(va, usd(0), "$")
+        cb, cbt = values(vb, usd(BATCH_FEE), "$")
+        out.append(f"| {label} | {at} | {bt} | {b / a:.2f}× | {jat} | {jbt} | {ja / jb:.2f}× | {cat} | {cbt} | {(1 - cb / ca) * 100:.1f}% |")
+    return out
+
+
 TABLES = [("throughput", "Peak throughput", throughput), ("single", "One request at a time", single), ("quality", "Quality", quality),
-          ("load", "More load measures", extra)]
+          ("load", "More load measures", extra), ("batch", "Batch transform jobs", batch)]
 
 
 def main():

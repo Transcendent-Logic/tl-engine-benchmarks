@@ -1,0 +1,30 @@
+{
+ "run": "2026-11-19-1511-batch-tl-engine-0.6b-c4",
+ "kind": "batch",
+ "configuration": "tl-engine",
+ "label": "TL Engine",
+ "size": "0.6B",
+ "model": "Qwen/Qwen3-Reranker-0.6B",
+ "revision": "e61197ed45024b0ed8a2d74b80b4d909f1255473",
+ "max_concurrent_transforms": 4,
+ "max_concurrent_transforms_set": true,
+ "input": {
+  "name": "short20-06b-7200",
+  "requests": 7200,
+  "seed": 20261119,
+  "sha256": "2b09d94f3b022bc3ad46124015ca0012cbc8b2bfe02a3257ab67df7bab1ced77"
+ },
+ "created_utc": "2026-11-19T15:11:26Z",
+ "started_utc": "2026-11-19T15:18:32Z",
+ "ended_utc": "2026-11-19T15:30:43Z",
+ "status": "Completed",
+ "instance_type": "ml.g6.xlarge",
+ "instance_count": 1,
+ "region": "eu-west-3",
+ "network_isolation": true,
+ "host_image": "SageMaker's default for batch (TransformAmiVersion not set)",
+ "notes": [],
+ "used_in": [
+  "batch"
+ ]
+}
