@@ -1,0 +1,47 @@
+{
+ "run": "2026-11-22-2208-tl-engine-4b",
+ "configuration": "tl-engine",
+ "label": "TL Engine",
+ "size": "4B",
+ "model": "Qwen/Qwen3-Reranker-4B",
+ "started_utc": "2026-11-22T22:08:56Z",
+ "finished_utc": "2026-11-22T23:09:28Z",
+ "image": "<our-private-ecr>/reranker (see image_digest)",
+ "image_digest": "sha256:81e43230efce898a28416ffabe09fccbe9f26ac36cc60e7badfa2c4d1b8140bd",
+ "environment": {},
+ "weights": "s3://<our-bucket>/tl/models/qwen3-reranker-4b.tar.gz",
+ "endpoint": {
+  "instance_type": "ml.g6.xlarge",
+  "instance_count": 1,
+  "region": "eu-west-3",
+  "network_isolation": true,
+  "host_image": "SageMaker's default",
+  "startup_health_check_timeout_s": 1800,
+  "model_download_timeout_s": 1800
+ },
+ "client": {
+  "instance_type": "c7i.xlarge",
+  "region": "eu-west-3",
+  "hammer_commit": "195a09c",
+  "machine": "second client (the one of the runs of 2026-11-17 and 18), Amazon Linux 2023"
+ },
+ "modes": [
+  {
+   "mode": "normal",
+   "start": "2026-11-22T22:08:59Z",
+   "args": "--timeout 75 --rate 0.25 --duration 900",
+   "exit": 0,
+   "end": "2026-11-22T22:24:18Z"
+  },
+  {
+   "mode": "hammer32k",
+   "start": "2026-11-22T22:24:19Z",
+   "args": "--timeout 75",
+   "exit": 0,
+   "end": "2026-11-22T23:09:27Z"
+  }
+ ],
+ "used_in": [
+  "throughput"
+ ]
+}

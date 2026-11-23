@@ -1,0 +1,40 @@
+# TL Engine · Qwen3-Reranker-4B · 2026-11-22 19:30 UTC
+
+One run of the benchmark. It feeds these tables in the [repository README](../../README.md): peak throughput, one request at a time, quality. Only three-run means are published there; this folder holds this run's own results.
+
+| | |
+|---|---|
+| Configuration | TL Engine: our inference engine for the NVIDIA L4 (proprietary, not in this repository) |
+| Model | Hugging Face `Qwen/Qwen3-Reranker-4B` revision `22e683669bc0f0bd69640a1354a6d0aebcfeede5`, in the engine's own file format, packed as `model.tar.gz` (made from the same revision's files, checked file by file against it on 2026-11-17). |
+| Image | Ours, in our private registry (digest `sha256:81e43230efce898a28416ffabe09fccbe9f26ac36cc60e7badfa2c4d1b8140bd`). |
+| Container environment | None: the image's own settings, as an endpoint from the listing runs ([endpoint/container.json](endpoint/container.json)) |
+| Endpoint | 1 × ml.g6.xlarge (one NVIDIA L4), eu-west-3 (Paris), network isolation on, SageMaker's default host image, start-up and download timeouts 1,800 s ([endpoint/variants.json](endpoint/variants.json)) |
+| Client | c7i.xlarge in eu-west-3, second client (the one of the runs of 2026-11-17 and 18), Amazon Linux 2023; the hammer at `195a09c` ([../../hammer/](../../hammer/)) |
+| Time (UTC) | 2026-11-22T19:30:32Z to 2026-11-22T20:44:02Z |
+
+## Modes
+
+| Mode | Arguments | Start (UTC) | End (UTC) | Exit status | Requests | Failed |
+|---|---|---|---|---|---|---|
+| [`quality`](quality.md) | `--timeout 75 --concurrency 2` | 19:30:36 | 20:17:31 | 0 | 2,000 | 1 |
+| [`meticulous`](meticulous.md) | `--timeout 75` | 20:17:33 | 20:31:32 | 0 | 952 | 0 |
+| [`speed`](speed.md) | `--timeout 75` | 20:31:33 | 20:41:00 | 0 | 443 | 7 |
+
+Exit status 1 means more than 5% of a mode's requests failed. Mode arguments are as the client's [status](status) file records them (`(none)`: the hammer's defaults, with its 60-second request timeout).
+
+Failed requests (every one is in the mode's `requests.jsonl`, with SageMaker's response):
+
+- `quality`: 1 × SageMaker got no answer from the container (HTTP 424, "container 0"), within milliseconds of sending.
+- `speed`: 7 × SageMaker ended the invocation at its 60-second limit (HTTP 424).
+
+## Notes
+
+- The container log is not published: it describes the proprietary engine's internals.
+
+## Files
+
+- `<mode>.md`: the hammer's report of that mode; `<mode>.requests.jsonl`: one record per request (send time, latency, scores, error); `<mode>.png`: its charts.
+- `status`: the client's log of the run: modes with their arguments and times, and single probe requests between modes, which no table uses.
+- `client-vmstat.log`: the client's CPU and memory, every 10 seconds.
+- `endpoint/`: the container definition and production variant the endpoint was created with, and the creation log with two sanity requests ([`scripts/req_short.json`](../../scripts/req_short.json), [`req_long.json`](../../scripts/req_long.json)). Our AWS account IDs, bucket and registry names are replaced by placeholders, and our internal name for the engine by `tl`.
+- `run.json`: this page as data; [`scripts/tables.py`](../../scripts/tables.py) reads it.

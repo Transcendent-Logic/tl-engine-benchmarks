@@ -14,9 +14,9 @@
 #   MODEL_PACKAGE_ARN  tl-engine: the model package ARN your subscription to the listing gives you
 #   REGION             default eu-west-3 (Paris), where every run was made
 #
-# The benchmark runs created TL Engine endpoints from the image directly, with the weights as a model.tar.gz and the
-# environment in TL_ENV below; the listing's model package carries the same engine and weights and sets STEP_TOKENS=4096 in its
-# image, so a buyer's endpoint runs the benchmarked settings with no environment at all (see ../README.md, "TL Engine").
+# The benchmark runs created TL Engine endpoints from the image directly, with the weights as a model.tar.gz and no
+# environment; the listing's model package carries the same image and weights, so a buyer's endpoint runs the benchmarked
+# settings (see ../README.md, "TL Engine").
 set -euo pipefail
 KIND=${1:?KIND}; SIZE=${2:?SIZE}; NAME=${3:?NAME}; REGION=${REGION:-eu-west-3}
 ROLE_ARN=${ROLE_ARN:?set ROLE_ARN}
@@ -51,10 +51,8 @@ PY
 tl-engine)
   MODEL_PACKAGE_ARN=${MODEL_PACKAGE_ARN:?set MODEL_PACKAGE_ARN}
   echo '{"ModelPackageName":"'$MODEL_PACKAGE_ARN'"}' > "$W/container.json"
-  # What the benchmark runs set instead (the benchmarked image, with the weights as model.tar.gz):
-  #   TL_ENV='{"COMPILE":"1","VLLM_DISABLE_COMPILE_CACHE":"1","VLLM_USE_AOT_COMPILE":"0","STEP_TOKENS":"4096",
-  #            "SM_VLLM_MAX_NUM_SEQS":"64","SM_VLLM_MAX_MODEL_LEN":"33000","SM_VLLM_ASYNC_SCHEDULING":""}'
-  # SageMaker's default host image, as in the runs; the 1,800 s timeouts are not needed (it starts in 5 to 7 minutes)
+  # The benchmark runs set instead the benchmarked image and the weights as model.tar.gz, with no environment.
+  # SageMaker's default host image, as in the runs; the 1,800 s timeouts are not needed (it starts in about 5 minutes)
   echo '[{"VariantName":"AllTraffic","ModelName":"'$NAME'","InitialInstanceCount":1,"InstanceType":"ml.g6.xlarge","ContainerStartupHealthCheckTimeoutInSeconds":1800,"ModelDataDownloadTimeoutInSeconds":1800}]' > "$W/variants.json"
   ;;
 *) echo "KIND must be vllm-bf16, vllm-fp8, vllm-int8 or tl-engine"; exit 1;;

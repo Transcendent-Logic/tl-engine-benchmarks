@@ -1,0 +1,9 @@
+== create reranker-tl-06b-q3 at 00:52:11Z
+{"Image":"<our-private-ecr>/reranker@sha256:81e43230efce898a28416ffabe09fccbe9f26ac36cc60e7badfa2c4d1b8140bd","ModelDataUrl":"s3://<our-bucket>/tl/models/qwen3-reranker-0.6b.tar.gz"}
+
+arn:aws:sagemaker:eu-west-3:<account-id>:model/reranker-tl-06b-q3
+arn:aws:sagemaker:eu-west-3:<account-id>:endpoint-config/reranker-tl-06b-q3
+arn:aws:sagemaker:eu-west-3:<account-id>:endpoint/reranker-tl-06b-q3
+== reranker-tl-06b-q3: InService after 3 min 52 s
+req_short 255 [(1, 0.997722), (2, 0.002558), (0, 0.000585)]
+req_long 24255 [(1, 0.956182), (0, 0.031092), (2, 0.000258)]

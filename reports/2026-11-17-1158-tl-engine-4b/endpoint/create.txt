@@ -1,9 +1,0 @@
-== create reranker-mp-mainc-4b-3 at 11:52:46Z
-{"Image":"<our-private-ecr>/reranker:mp-b3e27e6","ModelDataUrl":"s3://<our-bucket>/models/qwen3-reranker-4b/model.tar.gz","Environment":{"COMPILE":"1","VLLM_DISABLE_COMPILE_CACHE":"1","VLLM_USE_AOT_COMPILE":"0","STEP_TOKENS":"4096","SM_VLLM_MAX_NUM_SEQS":"64","SM_VLLM_MAX_MODEL_LEN":"33000","SM_VLLM_ASYNC_SCHEDULING":""}}
-
-arn:aws:sagemaker:eu-west-3:<account-id>:model/reranker-mp-mainc-4b-3
-arn:aws:sagemaker:eu-west-3:<account-id>:endpoint-config/reranker-mp-mainc-4b-3
-arn:aws:sagemaker:eu-west-3:<account-id>:endpoint/reranker-mp-mainc-4b-3
-== reranker-mp-mainc-4b-3: InService after 5 min 16 s
-req_short 255 [(1, 0.966407), (2, 0.004535), (0, 3.9e-05)]
-req_long 24255 [(1, 0.939801), (0, 0.027173), (2, 3.8e-05)]

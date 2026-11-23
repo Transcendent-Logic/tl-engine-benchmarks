@@ -1,0 +1,1 @@
+{"Image":"<our-private-ecr>/reranker@sha256:81e43230efce898a28416ffabe09fccbe9f26ac36cc60e7badfa2c4d1b8140bd","ModelDataUrl":"s3://<our-bucket>/tl/models/qwen3-reranker-4b.tar.gz"}

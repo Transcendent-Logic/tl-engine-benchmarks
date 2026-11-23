@@ -1,0 +1,12 @@
+start 2026-11-23T09:07:10Z endpoint=reranker-tl-06b-n1 hammer=195a09c modes=normal hammer32k model=default size=06b
+probe idle 1: 0.23 s ok tokens=6670 top_index=0 top_score=0.9806 2026-11-23T09:07:11Z
+probe idle 2: 0.21 s ok tokens=6670 top_index=0 top_score=0.9780 2026-11-23T09:07:12Z
+probe idle 3: 0.18 s ok tokens=6671 top_index=0 top_score=0.9810 2026-11-23T09:07:12Z
+normal start 2026-11-23T09:07:12Z args: --timeout 75 
+normal exit 0 2026-11-23T09:12:15Z
+probe right after normal: 0.18 s ok tokens=6670 top_index=0 top_score=0.9798 2026-11-23T09:12:15Z
+hammer32k start 2026-11-23T09:12:15Z args: --timeout 75 
+hammer32k exit 0 2026-11-23T09:57:18Z
+probe right after hammer32k: 0.20 s ok tokens=6670 top_index=0 top_score=0.9815 2026-11-23T09:57:18Z
+done 2026-11-23T09:57:19Z
+endpoint-delete-requested 2026-11-23T09:57:20Z

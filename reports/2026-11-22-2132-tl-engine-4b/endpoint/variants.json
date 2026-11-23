@@ -1,0 +1,1 @@
+[{"VariantName":"AllTraffic","ModelName":"reranker-tl-4b-q1","InitialInstanceCount":1,"InstanceType":"ml.g6.xlarge","ContainerStartupHealthCheckTimeoutInSeconds":1800,"ModelDataDownloadTimeoutInSeconds":1800}]

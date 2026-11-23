@@ -1,0 +1,12 @@
+start 2026-11-22T22:54:47Z endpoint=reranker-tl-8b-n3 hammer=195a09c modes=normal hammer32k model=qwen3-reranker-8b size=8b
+probe idle 1: 1.22 s ok tokens=6670 top_index=0 top_score=0.7021 2026-11-22T22:54:48Z
+probe idle 2: 1.24 s ok tokens=6669 top_index=0 top_score=0.6918 2026-11-22T22:54:50Z
+probe idle 3: 1.24 s ok tokens=6670 top_index=0 top_score=0.6901 2026-11-22T22:54:51Z
+normal start 2026-11-22T22:54:51Z args: --timeout 75 --rate 0.25 --duration 900
+normal exit 0 2026-11-22T23:10:10Z
+probe right after normal: 1.34 s ok tokens=6671 top_index=0 top_score=0.6893 2026-11-22T23:10:11Z
+hammer32k start 2026-11-22T23:10:12Z args: --timeout 75 
+hammer32k exit 0 2026-11-22T23:55:26Z
+probe right after hammer32k: 1.35 s ok tokens=6669 top_index=0 top_score=0.6811 2026-11-22T23:55:27Z
+done 2026-11-22T23:55:28Z
+endpoint-delete-requested 2026-11-22T23:55:28Z
