@@ -147,7 +147,7 @@ Ranking quality on three BEIR sets (300 queries each, 20 candidate documents per
 
 ### Batch transform jobs
 
-The same comparison as SageMaker batch transform jobs (vLLM 16-bit on 2026-11-19, TL Engine on 2026-11-22): each job on one ml.g6.xlarge in eu-west-3, network isolation on, and the same input file for both engines per size. The input is the `short20` requests (20 documents per request, the three BEIR sets), one per line, each query with a nonce: 7,200 requests for the 0.6B (61.7 million tokens), 1,800 for the 4B (15.4 million), 900 for the 8B (7.7 million). `MaxConcurrentTransforms` was left unset, SageMaker's default (it asks the container's `/execution-parameters`, which neither container has, and then sends one request at a time), or set to 4. Three jobs per configuration.
+The same comparison as SageMaker batch transform jobs (vLLM 16-bit on 2026-11-19, TL Engine on 2026-11-22): each job on one ml.g6.xlarge in eu-west-3, network isolation on, and the same input file for both engines per size. The input is the `short20` requests (20 documents per request, the three BEIR sets), one per line, each query with a nonce: 7,200 requests for the 0.6B (61.7 million tokens), 1,800 for the 4B (15.4 million), 900 for the 8B (7.7 million). `MaxConcurrentTransforms` was left unset, SageMaker's default (it asks the container's `/execution-parameters`, which neither benchmarked image had, and then sends one request at a time), or set to 4. Three jobs per configuration.
 
 - **Tokens a second:** the tokens of all responses (`usage.total_tokens`) over the time from the first to the last request in the container log.
 - **Billed job:** `TransformStartTime` to `TransformEndTime`, container start-up and processing. Not counted: the few minutes before, while AWS finds the instance, the same for both engines. "Finishes sooner by" is vLLM's billed job time divided by TL Engine's.
@@ -181,7 +181,7 @@ The same comparison as SageMaker batch transform jobs (vLLM 16-bit on 2026-11-19
 <!-- end -->
 
 - **Batch matches the endpoint benchmark.** At `MaxConcurrentTransforms` 4, vLLM 16-bit reaches 100% (0.6B), 94% (4B) and 100% (8B) of its peak on the endpoints (`short20`, 4 in flight, above), TL Engine 99%, 96% and 101%.
-- **SageMaker's default costs the most on the 0.6B.** Left at 1, the 0.6B runs at 94% of its speed at 4 on TL Engine (90% on vLLM 16-bit), because each request takes so little GPU time that the gaps between requests show. On the 4B and 8B one 20-document request already fills the L4: both engines keep 94 to 99% of their speed. Set `MaxConcurrentTransforms` to 4 for batch jobs.
+- **SageMaker's default costs the most on the 0.6B.** Left at 1, the 0.6B runs at 94% of its speed at 4 on TL Engine (90% on vLLM 16-bit), because each request takes so little GPU time that the gaps between requests show. On the 4B and 8B one 20-document request already fills the L4: both engines keep 94 to 99% of their speed. Set `MaxConcurrentTransforms` to 4 for batch jobs. The listing's image now answers `/execution-parameters` with 4 (see [TL Engine](#tl-engine)), so a job from the listing gets 4 when it is left unset.
 - **Same rankings.** On the same input, TL Engine's top document is vLLM 16-bit's in 96.2% (0.6B), 98.6% (4B) and 97.4% (8B) of requests, and in 99.6 to 99.8% counting a different top document whose vLLM score is within 0.01 of the best; vLLM 16-bit's own jobs agree with each other in 99.0 to 99.6%.
 - **Start-up** (job start to first request) is 110 to 180 seconds for TL Engine and 310 to 640 seconds for vLLM 16-bit; it is inside the billed job. Before it, AWS takes a few minutes to provide the instance, the same for both, so on these job sizes the whole wait from the create call to the finished job is shorter by less than the billed job.
 
@@ -205,7 +205,7 @@ The same comparison as SageMaker batch transform jobs (vLLM 16-bit on 2026-11-19
 ### TL Engine
 
 - Image used in the runs: ours, digest `sha256:81e43230efce898a28416ffabe09fccbe9f26ac36cc60e7badfa2c4d1b8140bd`, with no environment (the image's own settings), and the weights in the engine's own file format as a `model.tar.gz`.
-- **To run it yourself, subscribe to the listing** (Qwen3-Reranker-0.6B, 4B or 8B on TL Engine; links in [transcendent-logic/tl-engine-aws](https://github.com/transcendent-logic/tl-engine-aws)) and create an endpoint from its model package with no environment (`scripts/create_endpoint.sh tl-engine <size> <name>` with `MODEL_PACKAGE_ARN`). The listing's model package carries the benchmarked image and the same `model.tar.gz`, so a listing endpoint runs exactly what the runs ran.
+- **To run it yourself, subscribe to the listing** (Qwen3-Reranker-0.6B, 4B or 8B on TL Engine; links in [transcendent-logic/tl-engine-aws](https://github.com/transcendent-logic/tl-engine-aws)) and create an endpoint from its model package with no environment (`scripts/create_endpoint.sh tl-engine <size> <name>` with `MODEL_PACKAGE_ARN`). The listing's model package carries the same `model.tar.gz` and an image built from the benchmarked one with changes outside the engine only (digest `sha256:d79e6b968f53d2aa318c2999b72427b2bb4969cc907e6a7ad32d9323d097db2d`): the licence notice, the log lines, response ids named `score-…` as vLLM names them, and `/execution-parameters` for batch jobs. Its engine files are identical to the benchmarked image's, compared file by file, so a listing endpoint runs the engine the runs ran.
 
 ### Models
 
@@ -238,7 +238,7 @@ How the batch jobs differ from the endpoint runs:
 - **vLLM's weights are a `model.tar.gz`** of the same files as the endpoints' uncompressed folder: a batch job refuses a model whose container uses `ModelDataSource`.
 - **The host.** Both engines ran on SageMaker's default batch host, with NVIDIA driver 535. The vLLM endpoints ran on `al2023-ami-sagemaker-inference-gpu-4-1` (driver 580), which batch transform does not offer: `TransformAmiVersion` has only `al2-ami-sagemaker-batch-gpu-470` and `-535`. AWS's CUDA 13 vLLM container starts and runs there.
 - **vLLM 8B adds `SM_VLLM_GPU_MEMORY_UTILIZATION=0.925`** (vLLM's default is 0.92). With driver 535 the L4 reports 21.96 GiB instead of 22.03 GiB, and at 0.92 every start of vLLM 8B found 5.45 GiB of KV cache against the 5.49 GiB that 40,000 tokens need (`ValueError: To serve at least one request with the model's max seq len (40000), (5.49 GiB KV cache is needed, which is larger than the available KV cache memory (5.45 GiB)`), so the job failed its health check. On the endpoints the same check passed with 5.52 GiB. 0.925 gives about 5.57 GiB: more memory for vLLM, not less. The 0.6B and 4B run with the endpoints' settings unchanged.
-- **TL Engine ran from our image and `model.tar.gz`** with no environment, as on the endpoints: what the listing's model package carries (see [TL Engine](#tl-engine)).
+- **TL Engine ran from our image and `model.tar.gz`** with no environment, as on the endpoints and as the listing's model package runs it (see [TL Engine](#tl-engine)).
 
 ### What is not here
 

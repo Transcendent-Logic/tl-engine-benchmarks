@@ -5,7 +5,7 @@ One run of the benchmark. It feeds these tables in the [repository README](../..
 | | |
 |---|---|
 | Configuration | TL Engine: our inference engine for the NVIDIA L4 (proprietary, not in this repository) |
-| Model | Hugging Face `Qwen/Qwen3-Reranker-8B` revision `77d193c791ed757ca307ee72715aa132723da912`, in the engine's own file format, packed as `model.tar.gz` (made from the same revision's files, checked file by file against it on 2026-11-17). |
+| Model | Hugging Face `Qwen/Qwen3-Reranker-8B` revision `77d193c791ed757ca307ee72715aa132723da912`, in the engine's own file format: converted from that revision's weights (checked file by file against it on 2026-11-17) and packed as `model.tar.gz` with its tokenizer and configuration files, unmodified. |
 | Image | Ours, in our private registry (digest `sha256:81e43230efce898a28416ffabe09fccbe9f26ac36cc60e7badfa2c4d1b8140bd`). |
 | Container environment | None: the image's own settings, as an endpoint from the listing runs ([endpoint/container.json](endpoint/container.json)) |
 | Endpoint | 1 × ml.g6.xlarge (one NVIDIA L4), eu-west-3 (Paris), network isolation on, SageMaker's default host image, start-up and download timeouts 1,800 s ([endpoint/variants.json](endpoint/variants.json)) |
