@@ -6,7 +6,7 @@ Every number is a mean over the runs of one configuration (three per configurati
 otherwise), computed from the hammer's own report tables (<mode>.md) and per-request records (quality.requests.jsonl):
   - throughput: `speed` cells at 4 in flight and one request at a time (25 seconds each), and `hammer32k` (45 minutes at 2 in
     flight), as "API tok/s": the server's token count of the answered requests over wall time;
-  - latency: `meticulous`, one 32K-token document sent alone (30 requests), and `speed`, 20 documents one at a time (25
+  - latency: `meticulous`, one 25K-token document sent alone (30 requests), and `speed`, 20 documents one at a time (25
     seconds of requests), each as the median time (from <mode>.md) and the mean time (from <mode>.requests.jsonl);
     `normal` and `hammer32k` percentiles;
   - quality: nDCG@10 per BEIR set from the per-request records, and agreement with each 16-bit run (see agreement()).
@@ -72,7 +72,7 @@ def scores(run):
 
 def agreement(base, other):
     """Agreement of one run with one 16-bit run, as the mean of two shares: FiQA queries (300, 20 documents each) whose top
-    document is the same, and hidden-passage requests (`ladder1-32768`: 50 single documents of about 32K tokens, a planted
+    document is the same, and hidden-passage requests (`ladder1-32768`: 50 single documents of about 25K tokens, a planted
     sentence in each) whose score is within 0.2. Over the requests both runs answered."""
     am = lambda s: max(range(len(s)), key=s.__getitem__)
     fq = [i for i in base if base[i][0] == "beir-fiqa" and i in other]
@@ -124,7 +124,7 @@ THROUGHPUT = [  # (label, mode, row, column)
     ("One 8K-token document (`long8k`), 4 in flight", "speed", "long8k ×4", "API tok/s"),
     ("About 30K tokens in 3 to 55 documents (`pack32k`), 4 in flight", "speed", "pack32k ×4", "API tok/s"),
     ("About 31K tokens in 1 to 5 documents (`long32k`), 4 in flight", "speed", "long32k ×4", "API tok/s"),
-    ("32K-token requests for 45 minutes (`hammer32k`), 2 in flight", "hammer32k", "all", "API tok/s"),
+    ("About 30K-token requests for 45 minutes (`hammer32k`), 2 in flight", "hammer32k", "all", "API tok/s"),
 ]
 EXTRA = [  # not in the README's headline tables
     ("`hammer32k` median (s)", "hammer32k", "all", "p50 s", "s"),
@@ -148,7 +148,7 @@ def single(runs, size):
     out = ["| Request, sent alone | vLLM 16-bit (s) | TL Engine (s) | Faster by |", "|---|---|---|---|"]
     t32 = lambda r: cell(r, "meticulous", "32,768", "p50 s", "Single document")
     t20 = lambda r: cell(r, "speed", "short20 ×1", "p50 s")
-    rows = [("One document of 32K tokens (`meticulous`, 30 requests): median time", "quality", "meticulous", t32),
+    rows = [("One document of 25K tokens (`meticulous`, 30 requests): median time", "quality", "meticulous", t32),
             ("The same: mean time", "quality", "meticulous", lambda r: mean_time(r, "meticulous", "ladder1-32768")),
             ("20 documents per request (`speed` `short20 ×1`, 25 seconds of requests): median time", "throughput", "speed", t20),
             ("The same: mean time", "throughput", "speed", lambda r: mean_time(r, "speed", "short20 x1"))]
@@ -163,7 +163,7 @@ def quality(runs, size):
     base = [(r, scores(r)) for r in pick(runs, size, "vllm-bf16", "quality", "quality")]
     t32 = lambda r: cell(r, "meticulous", "32,768", "p50 s", "Single document")
     b32 = mean([t32(r) for r, _ in base])
-    out = ["| Configuration | nDCG@10 FiQA | nDCG@10 SciFact | nDCG@10 ArguAna | Agreement with 16-bit | One 32K document (s) | Faster than 16-bit by |",
+    out = ["| Configuration | nDCG@10 FiQA | nDCG@10 SciFact | nDCG@10 ArguAna | Agreement with 16-bit | One 25K document (s) | Faster than 16-bit by |",
            "|---|---|---|---|---|---|---|"]
     for c in CONFIGS:
         rs = pick(runs, size, c, "quality", "quality")

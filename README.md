@@ -26,7 +26,7 @@ All numbers are means of three runs. Tokens a second count the server's own toke
 
 ### Peak throughput
 
-Tokens a second for one instance, by request shape: each `speed` cell is 25 seconds of requests at 4 in flight, where both servers reach their peak (16 in flight adds nothing, and at 16 SageMaker's 60-second limit cut off some 4B and 8B requests of both). `hammer32k` sends 32K-token requests for 45 minutes, 2 in flight.
+Tokens a second for one instance, by request shape: each `speed` cell is 25 seconds of requests at 4 in flight, where both servers reach their peak (16 in flight adds nothing, and at 16 SageMaker's 60-second limit cut off some 4B and 8B requests of both). `hammer32k` sends requests of about 30K tokens for 45 minutes, 2 in flight.
 
 **0.6B**
 
@@ -38,7 +38,7 @@ Tokens a second for one instance, by request shape: each `speed` cell is 25 seco
 | One 8K-token document (`long8k`), 4 in flight | 23,116 | 39,156 | 1.69× |
 | About 30K tokens in 3 to 55 documents (`pack32k`), 4 in flight | 49,823 | 86,800 | 1.74× |
 | About 31K tokens in 1 to 5 documents (`long32k`), 4 in flight | 18,952 | 31,451 | 1.66× |
-| 32K-token requests for 45 minutes (`hammer32k`), 2 in flight | 18,596 | 30,569 | 1.64× |
+| About 30K-token requests for 45 minutes (`hammer32k`), 2 in flight | 18,596 | 30,569 | 1.64× |
 <!-- end -->
 
 **4B**
@@ -51,7 +51,7 @@ Tokens a second for one instance, by request shape: each `speed` cell is 25 seco
 | One 8K-token document (`long8k`), 4 in flight | 5,202 | 8,465 | 1.63× |
 | About 30K tokens in 3 to 55 documents (`pack32k`), 4 in flight | 10,413 | 16,342 | 1.57× |
 | About 31K tokens in 1 to 5 documents (`long32k`), 4 in flight | 4,538 | 7,448 | 1.64× |
-| 32K-token requests for 45 minutes (`hammer32k`), 2 in flight | 4,569 | 7,303 | 1.60× |
+| About 30K-token requests for 45 minutes (`hammer32k`), 2 in flight | 4,569 | 7,303 | 1.60× |
 <!-- end -->
 
 **8B**
@@ -64,19 +64,19 @@ Tokens a second for one instance, by request shape: each `speed` cell is 25 seco
 | One 8K-token document (`long8k`), 4 in flight | 2,980 | 5,002 | 1.68× |
 | About 30K tokens in 3 to 55 documents (`pack32k`), 4 in flight | 5,821 | 9,664 | 1.66× |
 | About 31K tokens in 1 to 5 documents (`long32k`), 4 in flight | 2,905 | 4,682 | 1.61× |
-| 32K-token requests for 45 minutes (`hammer32k`), 2 in flight | 2,819 | 4,578 | 1.62× |
+| About 30K-token requests for 45 minutes (`hammer32k`), 2 in flight | 2,819 | 4,578 | 1.62× |
 <!-- end -->
 
 ### One request at a time
 
-How long a single request takes when it has the endpoint to itself. One 32K-token document: 30 requests sent one after another (`meticulous`). 20 documents (the three BEIR sets, about 5K to 12K tokens a request): 25 seconds of requests one after another (`speed`, `short20 ×1`). Each is given as the median time (the typical request) and the mean time (the average over every answered request).
+How long a single request takes when it has the endpoint to itself. One 25K-token document: 30 requests sent one after another (`meticulous`; the hammer's `ladder1-32768` set, named for its designed length, which the servers count as 25,438 tokens). 20 documents (the three BEIR sets, about 5K to 12K tokens a request): 25 seconds of requests one after another (`speed`, `short20 ×1`). Each is given as the median time (the typical request) and the mean time (the average over every answered request).
 
 **0.6B**
 
 <!-- table:single-0.6B -->
 | Request, sent alone | vLLM 16-bit (s) | TL Engine (s) | Faster by |
 |---|---|---|---|
-| One document of 32K tokens (`meticulous`, 30 requests): median time | 2.221 | 1.306 | 1.70× |
+| One document of 25K tokens (`meticulous`, 30 requests): median time | 2.221 | 1.306 | 1.70× |
 | The same: mean time | 2.218 | 1.306 | 1.70× |
 | 20 documents per request (`speed` `short20 ×1`, 25 seconds of requests): median time | 0.178 | 0.088 | 2.03× |
 | The same: mean time | 0.184 | 0.091 | 2.01× |
@@ -87,7 +87,7 @@ How long a single request takes when it has the endpoint to itself. One 32K-toke
 <!-- table:single-4B -->
 | Request, sent alone | vLLM 16-bit (s) | TL Engine (s) | Faster by |
 |---|---|---|---|
-| One document of 32K tokens (`meticulous`, 30 requests): median time | 7.701 | 4.634 | 1.66× |
+| One document of 25K tokens (`meticulous`, 30 requests): median time | 7.701 | 4.634 | 1.66× |
 | The same: mean time | 7.697 | 4.635 | 1.66× |
 | 20 documents per request (`speed` `short20 ×1`, 25 seconds of requests): median time | 0.805 | 0.500 | 1.61× |
 | The same: mean time | 0.890 | 0.540 | 1.65× |
@@ -98,7 +98,7 @@ How long a single request takes when it has the endpoint to itself. One 32K-toke
 <!-- table:single-8B -->
 | Request, sent alone | vLLM 16-bit (s) | TL Engine (s) | Faster by |
 |---|---|---|---|
-| One document of 32K tokens (`meticulous`, 30 requests): median time | 11.100 | 6.720 | 1.65× |
+| One document of 25K tokens (`meticulous`, 30 requests): median time | 11.100 | 6.720 | 1.65× |
 | The same: mean time | 11.063 | 6.722 | 1.65× |
 | 20 documents per request (`speed` `short20 ×1`, 25 seconds of requests): median time | 1.565 | 0.963 | 1.62× |
 | The same: mean time | 1.678 | 1.045 | 1.61× |
@@ -109,13 +109,13 @@ How long a single request takes when it has the endpoint to itself. One 32K-toke
 Ranking quality on three BEIR sets (300 queries each, 20 candidate documents per query: every relevant document plus BM25 hard negatives), and how closely each configuration agrees with vLLM 16-bit.
 
 - **nDCG@10** against the datasets' relevance labels.
-- **Agreement with 16-bit:** each run compared with each vLLM 16-bit run, then averaged. It is the mean of two shares: FiQA queries whose top document is the same as 16-bit's, and long-document requests (`ladder1-32768`: 50 single documents of about 32K tokens, each with one planted sentence) whose score is within 0.2 of 16-bit's. For the 16-bit row, each 16-bit run is compared with the other two: this is how much 16-bit agrees with itself from run to run (99.8%, 99.7% and 99.3%), the ceiling for the others.
-- **One 32K document:** the median time from the table above, for every configuration.
+- **Agreement with 16-bit:** each run compared with each vLLM 16-bit run, then averaged. It is the mean of two shares: FiQA queries whose top document is the same as 16-bit's, and long-document requests (`ladder1-32768`: 50 single documents of about 25K tokens, each with one planted sentence) whose score is within 0.2 of 16-bit's. For the 16-bit row, each 16-bit run is compared with the other two: this is how much 16-bit agrees with itself from run to run (99.8%, 99.7% and 99.3%), the ceiling for the others.
+- **One 25K document:** the median time from the table above, for every configuration.
 
 **0.6B**
 
 <!-- table:quality-0.6B -->
-| Configuration | nDCG@10 FiQA | nDCG@10 SciFact | nDCG@10 ArguAna | Agreement with 16-bit | One 32K document (s) | Faster than 16-bit by |
+| Configuration | nDCG@10 FiQA | nDCG@10 SciFact | nDCG@10 ArguAna | Agreement with 16-bit | One 25K document (s) | Faster than 16-bit by |
 |---|---|---|---|---|---|---|
 | vLLM 16-bit | 0.675 | 0.821 | 0.580 | 99.8% (16-bit against itself) | 2.221 | 1.00× |
 | vLLM fp8 | 0.672 | 0.823 | 0.571 | 92.5% | 2.132 | 1.04× |
@@ -126,7 +126,7 @@ Ranking quality on three BEIR sets (300 queries each, 20 candidate documents per
 **4B**
 
 <!-- table:quality-4B -->
-| Configuration | nDCG@10 FiQA | nDCG@10 SciFact | nDCG@10 ArguAna | Agreement with 16-bit | One 32K document (s) | Faster than 16-bit by |
+| Configuration | nDCG@10 FiQA | nDCG@10 SciFact | nDCG@10 ArguAna | Agreement with 16-bit | One 25K document (s) | Faster than 16-bit by |
 |---|---|---|---|---|---|---|
 | vLLM 16-bit | 0.771 | 0.844 | 0.598 | 99.7% (16-bit against itself) | 7.701 | 1.00× |
 | vLLM fp8 | 0.765 | 0.843 | 0.604 | 94.6% | 6.713 | 1.15× |
@@ -137,7 +137,7 @@ Ranking quality on three BEIR sets (300 queries each, 20 candidate documents per
 **8B**
 
 <!-- table:quality-8B -->
-| Configuration | nDCG@10 FiQA | nDCG@10 SciFact | nDCG@10 ArguAna | Agreement with 16-bit | One 32K document (s) | Faster than 16-bit by |
+| Configuration | nDCG@10 FiQA | nDCG@10 SciFact | nDCG@10 ArguAna | Agreement with 16-bit | One 25K document (s) | Faster than 16-bit by |
 |---|---|---|---|---|---|---|
 | vLLM 16-bit | 0.780 | 0.849 | 0.695 | 99.3% (16-bit against itself) | 11.100 | 1.00× |
 | vLLM fp8 | 0.781 | 0.848 | 0.685 | 96.5% | 8.764 | 1.27× |
